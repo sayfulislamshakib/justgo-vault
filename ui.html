@@ -231,6 +231,19 @@
       font-weight: 600;
       flex: 1;
       color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .count-badge {
+      font-size: 10px;
+      font-weight: 700;
+      background: var(--bg);
+      color: var(--text-dim);
+      padding: 2px 6px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
     }
 
     .group-items {
@@ -442,7 +455,7 @@
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
       </span>
-      <input type="text" id="assetSearch" placeholder="Search brands, parents, or tags..." oninput="refresh()"
+      <input type="text" id="assetSearch" placeholder="Search" oninput="refresh()"
         style="width: 100%; height: 32px; padding: 0 12px 0 36px; border-radius: 8px; border: 1px solid var(--border); box-sizing: border-box; outline: none; font-size: 12px; background: #fff;">
     </div>
 
@@ -529,7 +542,8 @@
     <div
       style="background:#fff; border-radius:12px; padding:20px; width:100%; max-width:260px; box-shadow:0 10px 25px rgba(0,0,0,0.2); text-align:center; display:flex; flex-direction:column; gap:8px;">
       <div style="font-size:14px; font-weight:800; color:var(--text);">Delete this item?</div>
-      <div style="font-size:11px; font-weight:500; color:var(--text-dim); line-height:1.4;">This will permanently remove the item from your vault. This action cannot be undone.</div>
+      <div style="font-size:11px; font-weight:500; color:var(--text-dim); line-height:1.4;">This will permanently remove
+        the item from your vault. This action cannot be undone.</div>
       <div style="display:flex; gap:8px;">
         <button class="btn-import-top" style="flex:1; background:#ef4444; height:32px;"
           onclick="executeDelete()">Delete</button>
@@ -580,11 +594,10 @@
         html += `
           <div class="group-header" onclick="toggleGroup('${gName.replace(/'/g, "\\'")}')">
             ${g.logo ? `<div class="group-header-logo"><img src="${formatImg(g.logo)}"></div>` : ''}
-            <span class="group-name">${gName}</span>
+            <div class="group-name">${gName} <span class="count-badge">${g.items.length}</span></div>
             <div style="display:flex; gap:6px;" onclick="event.stopPropagation()">
                <button title="Add Club" class="btn-outline" style="width:24px; height:24px; padding:0; border-radius:4px;" onclick="openAddModal('club', '${gName.replace(/'/g, "\\'")}')">➕</button>
             </div>
-            <span style="font-size:10px; font-weight:700; opacity:0.3;">${g.items.length}</span>
             <svg style="transition: transform 0.2s; transform: rotate(${isOpen ? '180deg' : '0deg'}); color: var(--text-dim);" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </div>
           <div class="group-items ${isOpen ? '' : 'collapsed'}">
