@@ -41,6 +41,18 @@
       box-shadow: 0 0 0 2px var(--primary-light) !important;
     }
 
+    select {
+      appearance: none;
+      -webkit-appearance: none;
+      background-color: #fff;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 14px;
+      padding-right: 36px !important;
+      cursor: pointer;
+    }
+
     body {
       height: 100vh;
       overflow: hidden;
@@ -59,7 +71,8 @@
     .list {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
+      padding-bottom: 40px;
     }
 
     .item {
@@ -77,7 +90,6 @@
 
     .item:hover {
       border-color: var(--primary);
-      box-shadow: 0 4px 12px rgba(76, 175, 79, 0.1);
     }
 
     .brand-part-img {
@@ -329,6 +341,7 @@
       background: var(--primary-light);
       color: var(--primary);
       border-color: var(--primary);
+      box-shadow: 0 0 12px rgba(76, 175, 79, 0.2);
     }
 
     /* Logo Hover Styles */
@@ -402,7 +415,13 @@
       <div style="display:flex; gap:6px; align-items: center;">
         <button class="btn-import-top" onclick="openAddModal('ngb')">+ NGB</button>
         <div class="dropdown" id="menuDropdown">
-          <button class="dots-btn" onclick="toggleDropdown(event)">⋮</button>
+          <button class="dots-btn" onclick="toggleDropdown(event)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="2" fill="currentColor"></circle>
+              <circle cx="12" cy="19" r="2" fill="currentColor"></circle>
+              <circle cx="12" cy="5" r="2" fill="currentColor"></circle>
+            </svg>
+          </button>
           <div class="dropdown-content">
             <button onclick="document.getElementById('csvFile').click()">📥 Import Excel</button>
             <button onclick="exportExcel()" style="border-top: 1px solid var(--border);">📤 Export Excel</button>
@@ -449,7 +468,7 @@
         <div id="modalGroupWrapper" style="display:flex; flex-direction:column; gap:4px;">
           <label style="font-size:10px; font-weight:700; color:var(--text-dim); text-transform:uppercase;">Parent NGB</label>
           <select id="modalGroup"
-            style="padding:8px; border:1px solid var(--border); border-radius:6px; font-size:13px; outline:none; background:white; font-family:inherit; width:100%;"></select>
+            style="width:100%; box-sizing:border-box; padding:8px 12px; border:1px solid var(--border); border-radius:6px; font-size:13px; outline:none; font-family:inherit; min-height: 36px;"></select>
         </div>
 
         <div style="display:flex; flex-direction:column; gap:4px;">
@@ -734,9 +753,11 @@
     function updateLogoPreview() {
       const prev = document.getElementById('modalLogoPreview');
       const delBtn = document.getElementById('modalLogoClear');
+      const changeBtn = document.querySelector('.logo-overlay button:first-child');
       if (modalLogoBase64) {
         prev.innerHTML = `<img src="${formatImg(modalLogoBase64)}" style="max-width:100%; max-height:100%; object-fit:contain; padding:4px;">`;
         delBtn.style.display = 'block';
+        if (changeBtn) changeBtn.innerText = 'Change';
       } else {
         prev.innerHTML = `
           <div style="display:flex; flex-direction:column; align-items:center; gap:4px; opacity:0.3;">
@@ -744,6 +765,7 @@
             <span style="font-size:9px; font-weight:700; text-transform:uppercase; color:var(--text-dim);">No Logo</span>
           </div>`;
         delBtn.style.display = 'none';
+        if (changeBtn) changeBtn.innerText = 'Add';
       }
     }
 
