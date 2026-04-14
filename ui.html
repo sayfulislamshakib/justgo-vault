@@ -512,7 +512,7 @@
 
         <div style="display:flex; flex-direction:column; gap:4px;">
           <label style="font-size:10px; font-weight:700; color:var(--text-dim); text-transform:uppercase;">Logo</label>
-          <div class="logo-container" id="logoContainer">
+          <div class="logo-container" id="logoContainer" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
             <div id="modalLogoPreview"
               style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
               <span style="font-size:10px; color:#aaa;">No Logo</span>
@@ -785,8 +785,34 @@
       if (groups.length === 0) sel.innerHTML = `<option value="">No NGBs available</option>`;
     }
 
+    function handleDragOver(e) {
+      e.preventDefault();
+      document.getElementById('logoContainer').style.borderColor = 'var(--primary)';
+      document.getElementById('logoContainer').style.background = 'var(--primary-light)';
+    }
+
+    function handleDragLeave(e) {
+      e.preventDefault();
+      document.getElementById('logoContainer').style.borderColor = 'var(--border)';
+      document.getElementById('logoContainer').style.background = '#fff';
+    }
+
+    function handleDrop(e) {
+      e.preventDefault();
+      document.getElementById('logoContainer').style.borderColor = 'var(--border)';
+      document.getElementById('logoContainer').style.background = '#fff';
+      const file = e.dataTransfer.files[0];
+      if (!file || !file.type.startsWith('image/')) return;
+      processImageFile(file);
+    }
+
     function handleLogoUpload(e) {
       const file = e.target.files[0]; if (!file) return;
+      processImageFile(file);
+      e.target.value = '';
+    }
+
+    function processImageFile(file) {
       const r = new FileReader();
       r.onload = async ev => {
         let b64 = ev.target.result;
@@ -796,8 +822,20 @@
         updateLogoPreview();
       };
       r.readAsDataURL(file);
-      e.target.value = '';
     }
+
+    document.addEventListener('paste', function(e) {
+      if (document.getElementById('itemModal').style.display !== 'flex') return;
+      const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+      for (const item of items) {
+        if (item.type.indexOf('image/') === 0) {
+          e.preventDefault();
+          const file = item.getAsFile();
+          if (file) processImageFile(file);
+          break;
+        }
+      }
+    });
 
     function clearLogo() { modalLogoBase64 = ''; updateLogoPreview(); }
 
