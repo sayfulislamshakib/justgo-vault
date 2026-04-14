@@ -190,6 +190,12 @@
       padding: 4px;
     }
 
+    .group-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
     .group-header {
       display: flex;
       align-items: center;
@@ -201,6 +207,28 @@
       cursor: pointer;
       transition: 0.2s;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+    }
+
+    .group-header.is-open {
+      position: sticky;
+      top: -16px;
+      z-index: 50;
+    }
+
+    .group-header.is-sticky.is-open {
+      margin-left: -16px;
+      margin-right: -16px;
+      padding-left: 32px;
+      padding-right: 32px;
+      border-radius: 0;
+      border-color: transparent;
+      border-bottom-color: var(--border);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Enhance shadow to emphasize elevation when sticky */
+    }
+
+    .group-header.is-sticky.is-open:hover {
+      border-color: transparent;
+      border-bottom-color: var(--border);
     }
 
     .group-header:hover {
@@ -559,7 +587,43 @@
     window.onmessage = (e) => {
       const m = e.data.pluginMessage;
       if (!m) return;
-      if (m.type === 'load-data') { library = m.library || []; refresh(); }
+      if (m.type === 'load-data') { 
+        let rawLibrary = m.library || []; 
+        let hasModified = false;
+        const groupsSeen = {};
+        const newStandalone = [];
+
+        for (let i = 0; i < rawLibrary.length; i++) {
+          const item = rawLibrary[i];
+          const gName = item.group || 'Untitled NGB';
+          
+          if (!groupsSeen[gName]) {
+            groupsSeen[gName] = { 
+              logo: item.groupLogo || '', phone: item.groupPhone || '', 
+              address: item.groupAddress || '', email: item.groupEmail || '' 
+            };
+            const isStandalone = (item.name === gName || item.name === 'Unnamed NGB') && !item.phone && !item.address && !item.logo && !item.email;
+            if (!isStandalone && (item.groupLogo || item.groupPhone || item.groupAddress || item.groupEmail)) {
+              newStandalone.push({
+                type: 'bundle', name: gName, logo: '', phone: '', address: '', email: '',
+                group: gName, groupLogo: item.groupLogo, groupPhone: item.groupPhone,
+                groupAddress: item.groupAddress, groupEmail: item.groupEmail
+              });
+              hasModified = true;
+            }
+          }
+          
+          const isStandalone = (item.name === gName || item.name === 'Unnamed NGB') && !item.phone && !item.address && !item.logo && !item.email;
+          if (!isStandalone && (item.groupLogo || item.groupPhone || item.groupAddress || item.groupEmail)) {
+            delete item.groupLogo; delete item.groupPhone; delete item.groupAddress; delete item.groupEmail;
+            hasModified = true;
+          }
+        }
+        
+        library = [...newStandalone, ...rawLibrary];
+        if (hasModified) save();
+        refresh(); 
+      }
     };
 
     function refresh() {
@@ -575,14 +639,13 @@
       filtered.forEach(item => {
         const gName = item.group || 'Untitled';
         if (!groups[gName]) {
-          groups[gName] = {
-            items: [],
-            logo: item.groupLogo || '',
-            phone: item.groupPhone || '',
-            address: item.groupAddress || '',
-            email: item.groupEmail || ''
-          };
+          groups[gName] = { items: [], logo: '', phone: '', address: '', email: '' };
         }
+        if (item.groupLogo) groups[gName].logo = item.groupLogo;
+        if (item.groupPhone) groups[gName].phone = item.groupPhone;
+        if (item.groupAddress) groups[gName].address = item.groupAddress;
+        if (item.groupEmail) groups[gName].email = item.groupEmail;
+        
         groups[gName].items.push({ item, realIdx: library.indexOf(item) });
       });
 
@@ -597,22 +660,41 @@
         });
 
         html += `
-          <div class="group-header" onclick="toggleGroup('${gName.replace(/'/g, "\\'")}')">
-            ${g.logo ? `<div class="group-header-logo"><img src="${formatImg(g.logo)}"></div>` : ''}
-            <div class="group-name">${gName} <span class="count-badge">${clubItems.length}</span></div>
-            <div style="display:flex; gap:6px;" onclick="event.stopPropagation()">
-               <button title="Add Club" class="btn-outline" style="width:24px; height:24px; padding:0; border-radius:4px;" onclick="openAddModal('club', '${gName.replace(/'/g, "\\'")}')">➕</button>
+          <div class="group-wrapper">
+            <div class="group-header ${isOpen ? 'is-open' : ''}" onclick="toggleGroup('${gName.replace(/'/g, "\\'")}')">
+              ${g.logo ? `<div class="group-header-logo"><img src="${formatImg(g.logo)}"></div>` : ''}
+              <div class="group-name">${gName} <span class="count-badge">${clubItems.length}</span></div>
+              <div style="display:flex; gap:6px;" onclick="event.stopPropagation()">
+                 <button title="Add Club" class="btn-outline" style="width:24px; height:24px; padding:0; border-radius:4px;" onclick="openAddModal('club', '${gName.replace(/'/g, "\\'")}')">➕</button>
+              </div>
+              <svg style="transition: transform 0.2s; transform: rotate(${isOpen ? '180deg' : '0deg'}); color: var(--text-dim);" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
             </div>
-            <svg style="transition: transform 0.2s; transform: rotate(${isOpen ? '180deg' : '0deg'}); color: var(--text-dim);" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-          </div>
-          <div class="group-items ${isOpen ? '' : 'collapsed'}">
-            ${renderParentInfo(gName, g)}
-            ${clubItems.map(({ item, realIdx }) => renderBundle(item, realIdx)).join('')}
+            <div class="group-items ${isOpen ? '' : 'collapsed'}">
+              ${renderParentInfo(gName, g)}
+              ${clubItems.map(({ item, realIdx }) => renderBundle(item, realIdx)).join('')}
+            </div>
           </div>
         `;
       });
       document.getElementById('userList').innerHTML = html;
+      updateStickyHeaders();
     }
+
+    const contentBox = document.querySelector('.content');
+    function updateStickyHeaders() {
+      const contentTop = contentBox.getBoundingClientRect().top;
+      document.querySelectorAll('.group-header').forEach(header => {
+         const rect = header.getBoundingClientRect();
+         // Using +2 as a safe margin for floating point thresholds during scroll
+         if (rect.top <= contentTop + 2) {
+            header.classList.add('is-sticky');
+         } else {
+            header.classList.remove('is-sticky');
+         }
+      });
+    }
+    contentBox.addEventListener('scroll', updateStickyHeaders);
+    window.addEventListener('resize', updateStickyHeaders);
 
     function toggleGroup(gName) {
       if (openGroup === gName) {
@@ -686,18 +768,21 @@
 
     function formatImg(v) { return v && (v.startsWith('data:') || v.startsWith('http')) ? v : (v ? `data:image/png;base64,${v}` : ''); }
     
-    function resizeImage(base64Str, maxWidth = 300, maxHeight = 300) {
+    function resizeImage(base64Str, maxWidth = 200, maxHeight = 200) {
       return new Promise((resolve) => {
         const img = new Image();
         img.onload = () => {
           let width = img.width, height = img.height;
-          if (width <= maxWidth && height <= maxHeight) return resolve(base64Str);
-          const ratio = Math.min(maxWidth / width, maxHeight / height);
+          if (width <= maxWidth && height <= maxHeight && base64Str.length < 50000) return resolve(base64Str);
+          let ratio = 1;
+          if (width > maxWidth || height > maxHeight) {
+            ratio = Math.min(maxWidth / width, maxHeight / height);
+          }
           const canvas = document.createElement('canvas');
-          canvas.width = width * ratio; canvas.height = height * ratio;
+          canvas.width = Math.floor(width * ratio); canvas.height = Math.floor(height * ratio);
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-          resolve(canvas.toDataURL('image/jpeg', 0.85));
+          resolve(canvas.toDataURL('image/png'));
         };
         img.onerror = () => resolve(base64Str);
         img.src = base64Str.startsWith('data:') ? base64Str : `data:image/png;base64,${base64Str}`;
@@ -752,7 +837,8 @@
       document.getElementById('modalTitle').innerText = type === 'ngb' ? 'Edit NGB' : 'Edit Club';
 
       if (type === 'ngb') {
-        let rep = library.find(i => i.group === identifier);
+        let rep = library.find(i => i.group === identifier && (i.name === identifier || i.name === 'Unnamed NGB') && !i.phone && !i.address && !i.logo && !i.email);
+        if (!rep) rep = library.find(i => i.group === identifier);
         if (!rep) rep = { group: identifier, groupLogo: '', groupPhone: '', groupAddress: '', groupEmail: '' };
 
         document.getElementById('modalName').value = rep.group || identifier;
@@ -879,10 +965,14 @@
         } else {
           library.forEach(item => {
             if (item.group === currentEditId) {
-              item.group = name; item.groupLogo = modalLogoBase64; item.groupPhone = phone; item.groupAddress = address; item.groupEmail = email;
+              item.group = name; 
               if (item.name === currentEditId || item.name === 'Unnamed NGB') item.name = name;
             }
           });
+          let pItem = library.find(i => i.group === name && (i.name === name || i.name === 'Unnamed NGB') && !i.phone && !i.address && !i.logo && !i.email);
+          if (pItem) {
+             pItem.groupLogo = modalLogoBase64; pItem.groupPhone = phone; pItem.groupAddress = address; pItem.groupEmail = email;
+          }
         }
       } else if (currentEditType === 'club') {
         const groupName = document.getElementById('modalGroup').value;
@@ -892,17 +982,12 @@
         if (currentEditId === null) {
           library.push({
             type: 'bundle', name, logo: modalLogoBase64, phone, address, email,
-            group: groupName, groupLogo: parentItem ? parentItem.groupLogo : '', groupPhone: parentItem ? parentItem.groupPhone : '',
-            groupAddress: parentItem ? parentItem.groupAddress : '', groupEmail: parentItem ? parentItem.groupEmail : ''
+            group: groupName
           });
         } else {
           const item = library[currentEditId];
           item.name = name; item.logo = modalLogoBase64; item.phone = phone; item.address = address; item.email = email;
           item.group = groupName;
-          if (parentItem) {
-            item.groupLogo = parentItem.groupLogo; item.groupPhone = parentItem.groupPhone;
-            item.groupAddress = parentItem.groupAddress; item.groupEmail = parentItem.groupEmail;
-          }
         }
       }
       save(); refresh(); closeModal();
@@ -938,7 +1023,13 @@
         const groups = {};
         library.forEach(item => {
           const gName = item.group || 'Untitled NGB';
-          if (!groups[gName]) groups[gName] = { logo: item.groupLogo || '', phone: item.groupPhone || '', address: item.groupAddress || '', email: item.groupEmail || '', clubs: [] };
+          if (!groups[gName]) groups[gName] = { logo: '', phone: '', address: '', email: '', clubs: [] };
+          
+          if (item.groupLogo) groups[gName].logo = item.groupLogo;
+          if (item.groupPhone) groups[gName].phone = item.groupPhone;
+          if (item.groupAddress) groups[gName].address = item.groupAddress;
+          if (item.groupEmail) groups[gName].email = item.groupEmail;
+
           const isStandalone = (item.name === gName || item.name === 'Unnamed NGB') && !item.phone && !item.address && !item.logo && !item.email;
           if (!isStandalone) groups[gName].clubs.push(item);
         });
@@ -1191,11 +1282,7 @@
                   phone: cPhone,
                   address: cAddr,
                   email: cEmail,
-                  group: p.name || `Row ${i + 1} Untitled`,
-                  groupLogo: p.logo,
-                  groupPhone: p.phone,
-                  groupAddress: p.address,
-                  groupEmail: p.email
+                  group: p.name || `Row ${i + 1} Untitled`
                 });
               });
 
@@ -1203,25 +1290,23 @@
             }
           }
 
-          // Also add NGBs that have no clubs as standalone items
+          // Add NGBs as standalone items ALWAYS
           Object.keys(parentMap).forEach(rowIdx => {
             const i = parseInt(rowIdx);
-            if (!usedRows.has(i)) {
-              const p = parentMap[i];
-              newItems.push({
-                type: 'bundle',
-                name: p.name || 'Unnamed NGB',
-                logo: '',
-                phone: '',
-                address: '',
-                email: '',
-                group: p.name || 'Unnamed NGB',
-                groupLogo: p.logo,
-                groupPhone: p.phone,
-                groupAddress: p.address,
-                groupEmail: p.email
-              });
-            }
+            const p = parentMap[i];
+            newItems.push({
+              type: 'bundle',
+              name: p.name || 'Unnamed NGB',
+              logo: '',
+              phone: '',
+              address: '',
+              email: '',
+              group: p.name || 'Unnamed NGB',
+              groupLogo: p.logo,
+              groupPhone: p.phone,
+              groupAddress: p.address,
+              groupEmail: p.email
+            });
           });
 
           // Deduplicate: Compare by trimmed lowercase name and group to be robust
