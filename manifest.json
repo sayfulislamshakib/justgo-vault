@@ -1,0 +1,19 @@
+{
+  "name": "Content Vault",
+  "id": "1625414076577797243",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "ui.html",
+  "capabilities": [],
+  "enableProposedApi": false,
+  "editorType": [
+    "figma",
+    "figjam"
+  ],
+  "networkAccess": {
+    "allowedDomains": [
+      "*"
+    ],
+    "reasoning": "This plugin needs to fetch brand images from external URLs provided in imported CSV files."
+  }
+}
