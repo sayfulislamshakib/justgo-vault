@@ -121,17 +121,18 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      padding: 16px 16px;
+      padding: 16px 0;
+      gap: 2px;
       min-width: 0;
     }
 
     .detail-row {
-      padding: 6px 8px;
-      margin: 0 -8px;
+      padding: 6px 16px;
       border-radius: 8px;
       cursor: pointer;
       display: flex;
       flex-direction: column;
+      gap: 1px;
       transition: 0.2s;
       border-bottom: 1px solid rgba(0, 0, 0, 0.02);
     }
@@ -159,7 +160,6 @@
       text-transform: uppercase;
       color: var(--text-dim);
       letter-spacing: 0.05em;
-      margin-bottom: 1px;
     }
 
     .val {
@@ -194,7 +194,7 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 12px 16px;
+      padding: 16px 16px;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 8px;
@@ -301,7 +301,9 @@
       border-radius: 8px;
       border: 1px solid var(--border);
       overflow: hidden;
-      margin-top: 4px;
+      flex-direction: column;
+      gap: 0;
+      transform: translateY(4px);
     }
 
     .dropdown-content button {
@@ -410,7 +412,7 @@
     style="position:fixed; left:0; top:0; pointer-events:none; background:var(--text); color:#fff; padding:4px 8px; border-radius:6px; font-size:10px; font-weight:700; z-index:9999; display:none; transform:translate(12px, 12px); box-shadow:0 2px 8px rgba(0,0,0,0.15);">
     Apply</div>
   <div class="content">
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+    <div style="display: flex; align-items: center; justify-content: space-between;">
       <div style="font-size: 22px; font-weight: 900; color: var(--primary); letter-spacing: -0.03em;">Vault</div>
       <div style="display:flex; gap:6px; align-items: center;">
         <button class="btn-import-top" onclick="openAddModal('ngb')">+ NGB</button>
@@ -454,8 +456,12 @@
       <div style="padding:20px; overflow-y:auto; display:flex; flex-direction:column; gap:12px;">
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <h3 id="modalTitle" style="margin:0; font-size:16px; color:var(--text); font-weight:800;">Add Item</h3>
-          <button class="btn-outline btn-close-modal" style="width:28px; height:28px; border:none; padding:0; border-radius:50%;" onclick="closeModal()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.5 6.5L17.5 17.5M17.5 6.5L6.5 17.5" stroke="currentColor" stroke-width="3" stroke-linecap="round"></path></svg>
+          <button class="btn-outline btn-close-modal"
+            style="width:28px; height:28px; border:none; padding:0; border-radius:50%;" onclick="closeModal()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6.5 6.5L17.5 17.5M17.5 6.5L6.5 17.5" stroke="currentColor" stroke-width="3"
+                stroke-linecap="round"></path>
+            </svg>
           </button>
         </div>
 
@@ -466,14 +472,14 @@
         </div>
 
         <div id="modalGroupWrapper" style="display:flex; flex-direction:column; gap:4px;">
-          <label style="font-size:10px; font-weight:700; color:var(--text-dim); text-transform:uppercase;">Parent NGB</label>
+          <label style="font-size:10px; font-weight:700; color:var(--text-dim); text-transform:uppercase;">Parent
+            NGB</label>
           <select id="modalGroup"
             style="width:100%; box-sizing:border-box; padding:8px 12px; border:1px solid var(--border); border-radius:6px; font-size:13px; outline:none; font-family:inherit; min-height: 36px;"></select>
         </div>
 
         <div style="display:flex; flex-direction:column; gap:4px;">
-          <label
-            style="font-size:10px; font-weight:700; color:var(--text-dim); text-transform:uppercase;">Phone</label>
+          <label style="font-size:10px; font-weight:700; color:var(--text-dim); text-transform:uppercase;">Phone</label>
           <input id="modalPhone" type="text"
             style="width:100%; box-sizing:border-box; padding:8px; border:1px solid var(--border); border-radius:6px; font-size:13px; outline:none; font-family:inherit; background:#fff;">
         </div>
@@ -486,8 +492,7 @@
         </div>
 
         <div style="display:flex; flex-direction:column; gap:4px;">
-          <label
-            style="font-size:10px; font-weight:700; color:var(--text-dim); text-transform:uppercase;">Email</label>
+          <label style="font-size:10px; font-weight:700; color:var(--text-dim); text-transform:uppercase;">Email</label>
           <input id="modalEmail" type="email"
             style="width:100%; box-sizing:border-box; padding:8px; border:1px solid var(--border); border-radius:6px; font-size:13px; outline:none; font-family:inherit; background:#fff;">
         </div>
@@ -495,7 +500,8 @@
         <div style="display:flex; flex-direction:column; gap:4px;">
           <label style="font-size:10px; font-weight:700; color:var(--text-dim); text-transform:uppercase;">Logo</label>
           <div class="logo-container" id="logoContainer">
-            <div id="modalLogoPreview" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+            <div id="modalLogoPreview"
+              style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
               <span style="font-size:10px; color:#aaa;">No Logo</span>
             </div>
             <div class="logo-overlay">
@@ -508,20 +514,25 @@
         </div>
 
 
-        <div style="display:flex; gap:8px; margin-top:16px;">
+        <div style="display:flex; gap:8px;">
           <button class="btn-import-top" style="flex:1; border-radius:8px;" onclick="saveModal()">Save</button>
-          <button id="modalDelete" class="btn-outline" style="flex:1; border-radius:8px; color:#ef4444; border-color:#fee2e2; background:#fff5f5; display:none;" onclick="deleteItem()">Delete</button>
+          <button id="modalDelete" class="btn-outline"
+            style="flex:1; border-radius:8px; color:#ef4444; border-color:#fee2e2; background:#fff5f5; display:none;"
+            onclick="deleteItem()">Delete</button>
         </div>
       </div>
     </div>
   </div>
 
-  <div id="confirmModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:2000; padding:16px; box-sizing:border-box; align-items:center; justify-content:center;">
-    <div style="background:#fff; border-radius:12px; padding:20px; width:100%; max-width:260px; box-shadow:0 10px-25px rgba(0,0,0,0.2); text-align:center; display:flex; flex-direction:column; gap:8px;">
+  <div id="confirmModal"
+    style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:2000; padding:16px; box-sizing:border-box; align-items:center; justify-content:center;">
+    <div
+      style="background:#fff; border-radius:12px; padding:20px; width:100%; max-width:260px; box-shadow:0 10px 25px rgba(0,0,0,0.2); text-align:center; display:flex; flex-direction:column; gap:8px;">
       <div style="font-size:14px; font-weight:800; color:var(--text);">Delete this item?</div>
-      <div style="font-size:11px; font-weight:500; color:var(--text-dim); line-height:1.4; margin-bottom:8px;">This will permanently remove the item from your vault. This action cannot be undone.</div>
+      <div style="font-size:11px; font-weight:500; color:var(--text-dim); line-height:1.4;">This will permanently remove the item from your vault. This action cannot be undone.</div>
       <div style="display:flex; gap:8px;">
-        <button class="btn-import-top" style="flex:1; background:#ef4444; height:32px;" onclick="executeDelete()">Delete</button>
+        <button class="btn-import-top" style="flex:1; background:#ef4444; height:32px;"
+          onclick="executeDelete()">Delete</button>
         <button class="btn-outline" style="flex:1; height:32px;" onclick="closeConfirm()">Cancel</button>
       </div>
     </div>
@@ -570,10 +581,10 @@
           <div class="group-header" onclick="toggleGroup('${gName.replace(/'/g, "\\'")}')">
             ${g.logo ? `<div class="group-header-logo"><img src="${formatImg(g.logo)}"></div>` : ''}
             <span class="group-name">${gName}</span>
-            <div style="display:flex; gap:6px; margin-right:8px;" onclick="event.stopPropagation()">
+            <div style="display:flex; gap:6px;" onclick="event.stopPropagation()">
                <button title="Add Club" class="btn-outline" style="width:24px; height:24px; padding:0; border-radius:4px;" onclick="openAddModal('club', '${gName.replace(/'/g, "\\'")}')">➕</button>
             </div>
-            <span style="font-size:10px; font-weight:700; opacity:0.3; margin-right:8px;">${g.items.length}</span>
+            <span style="font-size:10px; font-weight:700; opacity:0.3;">${g.items.length}</span>
             <svg style="transition: transform 0.2s; transform: rotate(${isOpen ? '180deg' : '0deg'}); color: var(--text-dim);" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </div>
           <div class="group-items ${isOpen ? '' : 'collapsed'}">
@@ -600,7 +611,7 @@
           <button class="btn-outline" style="position:absolute; top:8px; right:8px; height:24px; padding:0 8px; border-radius:4px; z-index:10; box-shadow:0 1px 3px rgba(0,0,0,0.1);" onclick="event.stopPropagation(); openEditModal('ngb', '${name.replace(/'/g, "\\'")}')">✏️ Edit</button>
           ${g.logo ? `<div class="brand-part-img" onmouseenter="showTip()" onmouseleave="hideTip()" onclick="apply('image', '${g.logo.replace(/'/g, "\\'")}')"><div class="preview"><img src="${formatImg(g.logo)}"></div></div>` : ''}
           <div class="brand-details">
-            <div class="label" style="color:var(--primary); opacity:0.6; margin-bottom:4px; font-weight:600;">NGB</div>
+            <div class="label" style="color:var(--primary); opacity:0.6; font-weight:600;">NGB</div>
             ${renderDetail('Name', name)}
             ${g.phone ? renderDetail('Phone', g.phone) : ''}
             ${g.address ? renderDetail('Address', g.address) : ''}
@@ -617,7 +628,7 @@
           <button class="btn-outline" style="position:absolute; top:8px; right:8px; height:24px; padding:0 8px; border-radius:4px; z-index:10; box-shadow:0 1px 3px rgba(0,0,0,0.1);" onclick="event.stopPropagation(); openEditModal('club', ${idx})">✏️ Edit</button>
           ${o.logo ? `<div class="brand-part-img" onmouseenter="showTip()" onmouseleave="hideTip()" onclick="apply('image', '${imgVal}')"><div class="preview"><img src="${formatImg(o.logo)}"></div></div>` : ''}
           <div class="brand-details">
-            <div class="label" style="color:var(--primary); opacity:0.6; margin-bottom:4px; font-weight:600;">CLUB</div>
+            <div class="label" style="color:var(--primary); opacity:0.6; font-weight:600;">CLUB</div>
             ${o.name ? renderDetail('Name', o.name) : ''}
             ${o.phone ? renderDetail('Phone', o.phone) : ''}
             ${o.address ? renderDetail('Address', o.address) : ''}
@@ -634,17 +645,17 @@
     }
 
     let tipTimeout;
-    function showTip() { 
+    function showTip() {
       clearTimeout(tipTimeout);
       tipTimeout = setTimeout(() => {
         const t = document.getElementById('cursorTooltip');
-        if(t) t.style.display = 'block'; 
+        if (t) t.style.display = 'block';
       }, 400);
     }
-    function hideTip() { 
+    function hideTip() {
       clearTimeout(tipTimeout);
       const t = document.getElementById('cursorTooltip');
-      if(t) t.style.display = 'none'; 
+      if (t) t.style.display = 'none';
     }
 
     document.addEventListener('mousemove', (e) => {
@@ -696,6 +707,7 @@
 
       document.getElementById('modalDelete').style.display = 'none';
       document.getElementById('itemModal').style.display = 'flex';
+      setTimeout(() => document.getElementById('modalName').focus(), 100);
     }
 
     function openEditModal(type, identifier) {
@@ -726,6 +738,7 @@
       updateLogoPreview();
       document.getElementById('modalDelete').style.display = 'flex';
       document.getElementById('itemModal').style.display = 'flex';
+      setTimeout(() => document.getElementById('modalName').focus(), 100);
     }
 
     function populateGroupSelect(selectedGroup) {
@@ -769,7 +782,10 @@
       }
     }
 
-    function closeModal() { document.getElementById('itemModal').style.display = 'none'; }
+    function closeModal() {
+      document.getElementById('itemModal').style.display = 'none';
+      document.getElementById('assetSearch').focus();
+    }
 
     function saveModal() {
       const name = document.getElementById('modalName').value.trim();
