@@ -14,8 +14,15 @@ Promise.all([
 
 figma.ui.onmessage = async (msg) => {
   if (msg.type === 'save-data') {
-    await figma.clientStorage.setAsync('contentLibrary', msg.library);
-    await figma.clientStorage.setAsync('orgDetails', msg.orgData);
+    try {
+      await figma.clientStorage.setAsync('contentLibrary', msg.library);
+      if (msg.orgData) {
+        await figma.clientStorage.setAsync('orgDetails', msg.orgData);
+      }
+    } catch (e) {
+      figma.notify("⚠️ Vault is full (5MB limit). Please use smaller images or delete items.", { error: true });
+      figma.ui.postMessage({ type: 'storage-full' });
+    }
   }
 
   if (msg.type === 'notify') {
