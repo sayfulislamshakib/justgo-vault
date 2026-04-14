@@ -223,7 +223,8 @@
       border-radius: 0;
       border-color: transparent;
       border-bottom-color: var(--border);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Enhance shadow to emphasize elevation when sticky */
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      /* Enhance shadow to emphasize elevation when sticky */
     }
 
     .group-header.is-sticky.is-open:hover {
@@ -496,7 +497,7 @@
       style="background:var(--bg); border-radius:16px; box-shadow:0 10px 25px rgba(0,0,0,0.1); max-height:100%; display:flex; flex-direction:column; overflow:hidden;">
       <div style="padding:20px; overflow-y:auto; display:flex; flex-direction:column; gap:12px;">
         <div style="display:flex; justify-content:space-between; align-items:center;">
-          <h3 id="modalTitle" style="margin:0; font-size:16px; color:var(--text); font-weight:800;">Add Item</h3>
+          <h3 id="modalTitle" style="margin:0; font-size:14px; color:var(--text); font-weight:600;">Add Item</h3>
           <button class="btn-outline btn-close-modal"
             style="width:28px; height:28px; border:none; padding:0; border-radius:50%;" onclick="closeModal()">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -510,6 +511,23 @@
           <label style="font-size:10px; font-weight:700; color:var(--text-dim); text-transform:uppercase;">Name</label>
           <input id="modalName" type="text"
             style="width:100%; box-sizing:border-box; padding:8px; border:1px solid var(--border); border-radius:6px; font-size:13px; outline:none; font-family:inherit; background:#fff;">
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:4px;">
+          <label style="font-size:10px; font-weight:700; color:var(--text-dim); text-transform:uppercase;">Logo</label>
+          <div class="logo-container" id="logoContainer" ondragover="handleDragOver(event)"
+            ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+            <div id="modalLogoPreview"
+              style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+              <span style="font-size:10px; color:#aaa;">No Logo</span>
+            </div>
+            <div class="logo-overlay">
+              <button onclick="document.getElementById('modalLogoUpload').click()">Change</button>
+              <button class="del-btn" id="modalLogoClear" onclick="clearLogo()">Remove</button>
+            </div>
+          </div>
+          <input type="file" id="modalLogoUpload" style="display:none" accept="image/png, image/jpeg, image/svg+xml"
+            onchange="handleLogoUpload(event)">
         </div>
 
         <div id="modalGroupWrapper" style="display:flex; flex-direction:column; gap:4px;">
@@ -526,32 +544,16 @@
         </div>
 
         <div style="display:flex; flex-direction:column; gap:4px;">
-          <label
-            style="font-size:10px; font-weight:700; color:var(--text-dim); text-transform:uppercase;">Address</label>
-          <textarea id="modalAddress"
-            style="width:100%; box-sizing:border-box; padding:8px; border:1px solid var(--border); border-radius:6px; font-size:13px; outline:none; font-family:inherit; background:#fff; resize:none; height:60px; line-height:1.5;"></textarea>
-        </div>
-
-        <div style="display:flex; flex-direction:column; gap:4px;">
           <label style="font-size:10px; font-weight:700; color:var(--text-dim); text-transform:uppercase;">Email</label>
           <input id="modalEmail" type="email"
             style="width:100%; box-sizing:border-box; padding:8px; border:1px solid var(--border); border-radius:6px; font-size:13px; outline:none; font-family:inherit; background:#fff;">
         </div>
 
         <div style="display:flex; flex-direction:column; gap:4px;">
-          <label style="font-size:10px; font-weight:700; color:var(--text-dim); text-transform:uppercase;">Logo</label>
-          <div class="logo-container" id="logoContainer" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
-            <div id="modalLogoPreview"
-              style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
-              <span style="font-size:10px; color:#aaa;">No Logo</span>
-            </div>
-            <div class="logo-overlay">
-              <button onclick="document.getElementById('modalLogoUpload').click()">Change</button>
-              <button class="del-btn" id="modalLogoClear" onclick="clearLogo()">Remove</button>
-            </div>
-          </div>
-          <input type="file" id="modalLogoUpload" style="display:none" accept="image/png, image/jpeg, image/svg+xml"
-            onchange="handleLogoUpload(event)">
+          <label
+            style="font-size:10px; font-weight:700; color:var(--text-dim); text-transform:uppercase;">Address</label>
+          <textarea id="modalAddress"
+            style="width:100%; box-sizing:border-box; padding:8px; border:1px solid var(--border); border-radius:6px; font-size:13px; outline:none; font-family:inherit; background:#fff; resize:vertical; height:60px; line-height:1.5;"></textarea>
         </div>
 
 
@@ -587,8 +589,8 @@
     window.onmessage = (e) => {
       const m = e.data.pluginMessage;
       if (!m) return;
-      if (m.type === 'load-data') { 
-        let rawLibrary = m.library || []; 
+      if (m.type === 'load-data') {
+        let rawLibrary = m.library || [];
         let hasModified = false;
         const groupsSeen = {};
         const newStandalone = [];
@@ -596,11 +598,11 @@
         for (let i = 0; i < rawLibrary.length; i++) {
           const item = rawLibrary[i];
           const gName = item.group || 'Untitled NGB';
-          
+
           if (!groupsSeen[gName]) {
-            groupsSeen[gName] = { 
-              logo: item.groupLogo || '', phone: item.groupPhone || '', 
-              address: item.groupAddress || '', email: item.groupEmail || '' 
+            groupsSeen[gName] = {
+              logo: item.groupLogo || '', phone: item.groupPhone || '',
+              address: item.groupAddress || '', email: item.groupEmail || ''
             };
             const isStandalone = (item.name === gName || item.name === 'Unnamed NGB') && !item.phone && !item.address && !item.logo && !item.email;
             if (!isStandalone && (item.groupLogo || item.groupPhone || item.groupAddress || item.groupEmail)) {
@@ -612,17 +614,17 @@
               hasModified = true;
             }
           }
-          
+
           const isStandalone = (item.name === gName || item.name === 'Unnamed NGB') && !item.phone && !item.address && !item.logo && !item.email;
           if (!isStandalone && (item.groupLogo || item.groupPhone || item.groupAddress || item.groupEmail)) {
             delete item.groupLogo; delete item.groupPhone; delete item.groupAddress; delete item.groupEmail;
             hasModified = true;
           }
         }
-        
+
         library = [...newStandalone, ...rawLibrary];
         if (hasModified) save();
-        refresh(); 
+        refresh();
       }
     };
 
@@ -645,7 +647,7 @@
         if (item.groupPhone) groups[gName].phone = item.groupPhone;
         if (item.groupAddress) groups[gName].address = item.groupAddress;
         if (item.groupEmail) groups[gName].email = item.groupEmail;
-        
+
         groups[gName].items.push({ item, realIdx: library.indexOf(item) });
       });
 
@@ -684,13 +686,13 @@
     function updateStickyHeaders() {
       const contentTop = contentBox.getBoundingClientRect().top;
       document.querySelectorAll('.group-header').forEach(header => {
-         const rect = header.getBoundingClientRect();
-         // Using +2 as a safe margin for floating point thresholds during scroll
-         if (rect.top <= contentTop + 2) {
-            header.classList.add('is-sticky');
-         } else {
-            header.classList.remove('is-sticky');
-         }
+        const rect = header.getBoundingClientRect();
+        // Using +2 as a safe margin for floating point thresholds during scroll
+        if (rect.top <= contentTop + 2) {
+          header.classList.add('is-sticky');
+        } else {
+          header.classList.remove('is-sticky');
+        }
       });
     }
     contentBox.addEventListener('scroll', updateStickyHeaders);
@@ -767,7 +769,7 @@
     });
 
     function formatImg(v) { return v && (v.startsWith('data:') || v.startsWith('http')) ? v : (v ? `data:image/png;base64,${v}` : ''); }
-    
+
     function resizeImage(base64Str, maxWidth = 200, maxHeight = 200) {
       return new Promise((resolve) => {
         const img = new Image();
@@ -910,7 +912,7 @@
       r.readAsDataURL(file);
     }
 
-    document.addEventListener('paste', function(e) {
+    document.addEventListener('paste', function (e) {
       if (document.getElementById('itemModal').style.display !== 'flex') return;
       const items = (e.clipboardData || e.originalEvent.clipboardData).items;
       for (const item of items) {
@@ -965,13 +967,13 @@
         } else {
           library.forEach(item => {
             if (item.group === currentEditId) {
-              item.group = name; 
+              item.group = name;
               if (item.name === currentEditId || item.name === 'Unnamed NGB') item.name = name;
             }
           });
           let pItem = library.find(i => i.group === name && (i.name === name || i.name === 'Unnamed NGB') && !i.phone && !i.address && !i.logo && !i.email);
           if (pItem) {
-             pItem.groupLogo = modalLogoBase64; pItem.groupPhone = phone; pItem.groupAddress = address; pItem.groupEmail = email;
+            pItem.groupLogo = modalLogoBase64; pItem.groupPhone = phone; pItem.groupAddress = address; pItem.groupEmail = email;
           }
         }
       } else if (currentEditType === 'club') {
@@ -1024,7 +1026,7 @@
         library.forEach(item => {
           const gName = item.group || 'Untitled NGB';
           if (!groups[gName]) groups[gName] = { logo: '', phone: '', address: '', email: '', clubs: [] };
-          
+
           if (item.groupLogo) groups[gName].logo = item.groupLogo;
           if (item.groupPhone) groups[gName].phone = item.groupPhone;
           if (item.groupAddress) groups[gName].address = item.groupAddress;
@@ -1114,14 +1116,14 @@
           async function zipToB64(path) {
             const f = zip.file(path); if (!f) return '';
             const blob = await f.async("blob");
-            return new Promise(res => { 
-              const r = new FileReader(); 
+            return new Promise(res => {
+              const r = new FileReader();
               r.onloadend = async () => {
                 let resized = await resizeImage(r.result);
                 if (resized.indexOf(',') > -1) resized = resized.split(',')[1];
                 res(resized);
-              }; 
-              r.readAsDataURL(blob); 
+              };
+              r.readAsDataURL(blob);
             });
           }
 
