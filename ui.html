@@ -81,12 +81,12 @@
     }
 
     .brand-part-img {
-      padding: 20px;
+      padding: 16px;
       cursor: pointer;
       border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
       background: rgba(0, 0, 0, 0.01);
       width: auto;
       transition: 0.2s;
@@ -98,7 +98,7 @@
 
     .parent-card .brand-part-img {
       background: rgba(0, 0, 0, 0.01);
-      padding: 24px;
+      padding: 16px;
     }
 
     .parent-card .brand-part-img:hover {
@@ -109,7 +109,7 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      padding: 12px 16px;
+      padding: 16px 16px;
       min-width: 0;
     }
 
@@ -581,7 +581,7 @@
           <button class="btn-outline" style="position:absolute; top:8px; right:8px; height:24px; padding:0 8px; border-radius:4px; z-index:10; box-shadow:0 1px 3px rgba(0,0,0,0.1);" onclick="event.stopPropagation(); openEditModal('ngb', '${name.replace(/'/g, "\\'")}')">✏️ Edit</button>
           ${g.logo ? `<div class="brand-part-img" onmouseenter="showTip()" onmouseleave="hideTip()" onclick="apply('image', '${g.logo.replace(/'/g, "\\'")}')"><div class="preview"><img src="${formatImg(g.logo)}"></div></div>` : ''}
           <div class="brand-details">
-            <div class="label" style="color:var(--primary); opacity:0.6; margin-bottom:4px; font-weight:500;">NGB</div>
+            <div class="label" style="color:var(--primary); opacity:0.6; margin-bottom:4px; font-weight:600;">NGB</div>
             ${renderDetail('Name', name)}
             ${g.phone ? renderDetail('Phone', g.phone) : ''}
             ${g.address ? renderDetail('Address', g.address) : ''}
@@ -598,7 +598,7 @@
           <button class="btn-outline" style="position:absolute; top:8px; right:8px; height:24px; padding:0 8px; border-radius:4px; z-index:10; box-shadow:0 1px 3px rgba(0,0,0,0.1);" onclick="event.stopPropagation(); openEditModal('club', ${idx})">✏️ Edit</button>
           ${o.logo ? `<div class="brand-part-img" onmouseenter="showTip()" onmouseleave="hideTip()" onclick="apply('image', '${imgVal}')"><div class="preview"><img src="${formatImg(o.logo)}"></div></div>` : ''}
           <div class="brand-details">
-            <div class="label" style="color:var(--primary); opacity:0.6; margin-bottom:4px; font-weight:500;">CLUB</div>
+            <div class="label" style="color:var(--primary); opacity:0.6; margin-bottom:4px; font-weight:600;">CLUB</div>
             ${o.name ? renderDetail('Name', o.name) : ''}
             ${o.phone ? renderDetail('Phone', o.phone) : ''}
             ${o.address ? renderDetail('Address', o.address) : ''}
